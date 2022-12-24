@@ -19,7 +19,7 @@ public class Solution03Part2 extends AbstractSolution {
 	@Override
 	protected void processInput(List<String> inputLines) {
 		List<Set<Character>> rucksacks = new ArrayList<>();
-		emptyRucksacks(rucksacks);
+		reinitializeRucksacks(rucksacks);
 
 		int sum = calcSumOfRucksackGroupsItemValues(inputLines, rucksacks);
 		System.out.println(sum);
@@ -34,7 +34,7 @@ public class Solution03Part2 extends AbstractSolution {
 
 			if (i == NUM_OF_RUCKSACKS) {
 				sum += calcRucksacksIntersectionValue(rucksacks);
-				emptyRucksacks(rucksacks);
+				reinitializeRucksacks(rucksacks);
 
 				i = 0;
 			}
@@ -49,13 +49,11 @@ public class Solution03Part2 extends AbstractSolution {
 	}
 
 	private static int calcValueOfItems(Set<Character> intersectionOfRucksacks) {
-		int sum = 0;
-		for (Character c : intersectionOfRucksacks) {
-			Item item = new Item(c);
-			sum += item.getValue();
-		}
-
-		return sum;
+		return intersectionOfRucksacks.stream()
+			.map(Item::new)
+			.map(Item::getValue)
+			.reduce(Integer::sum)
+			.orElse(0);
 	}
 
 	private static Set<Character> intersectRucksacks(List<Set<Character>> rucksacks) {
@@ -66,7 +64,7 @@ public class Solution03Part2 extends AbstractSolution {
 		return intersection;
 	}
 
-	private void emptyRucksacks(List<Set<Character>> rucksacks) {
+	private void reinitializeRucksacks(List<Set<Character>> rucksacks) {
 		rucksacks.clear();
 
 		for (int i = 0; i < NUM_OF_RUCKSACKS; i++) {
